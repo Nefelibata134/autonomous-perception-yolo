@@ -85,9 +85,11 @@ autonomous-perception-yolo/
 
 ## 🎬 演示
 
-| 检测示例（预训练模型推理） | 跟踪示例（WIP） |
-|:---:|:---:|
-| `assets/demo_detection.jpg` | 待添加 |
+### 检测示例（预训练模型推理）
+![检测示例](https://github.com/Nefelibata134/autonomous-perception-yolo/blob/main/assets/demo_detection.jpg)
+
+### 跟踪示例（WIP）
+待添加
 
 ---
 
