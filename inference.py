@@ -50,18 +50,13 @@ def detect_image(model_path, source, conf=0.5, save=True):
 
 
 def detect_video(model_path, source, conf=0.5, save=True):
-    """
-    视频推理（实时显示）
-    """
     model = YOLO(model_path)
-
-    # 打开视频
     cap = cv2.VideoCapture(source)
     if not cap.isOpened():
         print("无法打开视频")
         return
 
-    # 视频写入器（保存结果）
+    out = None  # ← 加这一行！防止 save=False 时未定义
     if save:
         fps = cap.get(cv2.CAP_PROP_FPS)
         w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -75,26 +70,22 @@ def detect_video(model_path, source, conf=0.5, save=True):
         if not ret:
             break
 
-        # 推理（每帧）
         results = model(frame, conf=conf, verbose=False)
-        annotated = results[0].plot()  # 带框的图
-
-        # 显示
+        annotated = results[0].plot()
         cv2.imshow('YOLOv8 Detection', annotated)
 
-        if save:
+        if save and out is not None:  # ← 加判断
             out.write(annotated)
 
         frame_count += 1
         if frame_count % 30 == 0:
             print(f"已处理 {frame_count} 帧")
 
-        # 按 q 退出
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
     cap.release()
-    if save:
+    if out is not None:  # ← 加判断
         out.release()
     cv2.destroyAllWindows()
     print(f"视频处理完成，共 {frame_count} 帧")
