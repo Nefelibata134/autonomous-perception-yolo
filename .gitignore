@@ -1,0 +1,20 @@
+# 数据集和模型权重（太大，不上传）
+datasets/
+*.pt
+*.pth
+*.onnx
+*.engine
+runs/
+__pycache__/
+*.pyc
+*.mp4
+*.avi
+*.jpg
+*.jpeg
+*.png
+!assets/demo_detection.jpg
+!assets/demo_tracking.jpg
+
+# 系统
+.idea/
+.cache/
