@@ -1,0 +1,19 @@
+# configs/data.yaml
+# YOLOv8 训练配置文件
+
+# 数据集根目录（绝对路径，避免歧义）
+path: /home/nefelibata/autonomous_driving/autonomous-perception-yolo/data/bdd100k
+
+# 训练和验证图片路径（相对于 path）
+train: bdd100k/images/100k/train
+val: bdd100k/images/100k/val
+
+# 类别定义
+names:
+  0: car
+  1: person
+  2: traffic light
+  3: traffic sign
+
+# 可选：下载链接或说明
+download: https://bdd-data.berkeley.edu

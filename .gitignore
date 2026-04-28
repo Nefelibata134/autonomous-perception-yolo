@@ -1,5 +1,9 @@
-# 数据集和模型权重（太大，不上传）
-datasets/
+# 数据集（太大，不上传）
+data/bdd100k/images/
+data/bdd100k/labels/
+data/bdd100k/labels_yolo/
+
+# 模型权重
 *.pt
 *.pth
 *.onnx
@@ -7,13 +11,12 @@ datasets/
 runs/
 __pycache__/
 *.pyc
+
+# 视频和大图（示例图除外）
 *.mp4
 *.avi
-*.jpg
-*.jpeg
-*.png
-!assets/demo_detection.jpg
-!assets/demo_tracking.jpg
+!assets/*.jpg
+!assets/*.png
 
 # 系统
 .idea/
