@@ -100,12 +100,12 @@ if __name__ == "__main__":
     convert_bdd100k_to_yolo(
         bdd_json_path='data/bdd100k/labels/bdd100k_labels_images_train.json',
         img_dir='data/bdd100k/images/100k/train',
-        output_label_dir='data/bdd100k/labels_yolo/train'
+        output_label_dir='data/bdd100k/labels/100k/train'
     )
 
     # 转换验证集
     convert_bdd100k_to_yolo(
         bdd_json_path='data/bdd100k/labels/bdd100k_labels_images_val.json',
         img_dir='data/bdd100k/images/100k/val',
-        output_label_dir='data/bdd100k/labels_yolo/val'
+        output_label_dir='data/bdd100k/labels/100k/val'
     )
