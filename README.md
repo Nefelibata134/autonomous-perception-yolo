@@ -64,16 +64,36 @@ python inference.py --source assets/test_video.mp4 --weights yolov8s.pt --save
 
 ```
 autonomous-perception-yolo/
-├── assets/                  # 示例图片/视频（不上传大文件）
-├── configs/                 # 训练配置文件
-├── data/                    # 数据集（BDD100K，.gitignore）
+├── assets/
+    ├──demo_detection.jpg
+    ├──demo_yolo_labels.jpg
+    ├──test.jpg                      # 示例图片/视频（不上传大文件）
+├── configs/
+    ├──data.ymal             # 训练配置文件
+├── data/
+    ├──bdd100k/
+        ├──images/
+            ├──10k/
+                ├──test/
+                ├──train/
+                ├──val/
+            ├──100k/
+                ├──test/
+                ├──train/
+                ├──val/
+        ├──labels/
+            ├──100k/
+                ├──train/
+                ├──val/
+            ├──bdd100k_labels_images_train.json
+            ├──bdd100k_labels_images_val.json          # 数据集（BDD100K，.gitignore）
 ├── models/
 │   ├── yolo_detector.py     # YOLOv8 封装类
 │   ├── deepsort_tracker.py  # DeepSORT 跟踪器
 │   └── bev_transform.py     # BEV 视角转换
 ├── utils/
 │   ├── dataset_converter.py # BDD100K → YOLO 格式转换
-│   └── visualizer.py        # 可视化工具
+│   └── visualizer_yolo.py        # 可视化工具
 ├── inference.py             # 推理入口
 ├── train.py                 # 训练脚本
 ├── eval.py                  # 评估脚本（mAP计算）
