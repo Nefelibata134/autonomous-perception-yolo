@@ -24,7 +24,7 @@
 
 | 指标 | 目标值 | 当前值 | 备注 |
 |------|--------|--------|------|
-| mAP@50 (BDD100K) | > 0.80 | WIP | 车辆/行人/交通标志 |
+| mAP@50 (BDD100K) | > 0.80 | **0.676** | YOLOv8s，50 epochs |
 | 推理速度 (RTX 4070) | > 60 FPS | WIP | batch=1, FP16 |
 | 跟踪 IDF1 Score | > 0.70 | ⏳ | DeepSORT |
 | BEV 车道线平行度误差 | < 5° | ⏳ | IPM 标定 |
@@ -115,16 +115,16 @@ autonomous-perception-yolo/
 
 ## 📝 开发日志
 
-| 日期 | 里程碑 | 完成内容 |
-|------|--------|----------|
+| 日期         | 里程碑 | 完成内容 |
+|------------|--------|----------|
 | 2026-04-27 | WIP Day 1 | YOLOv8 环境搭建，单张图/视频推理跑通 |
-| TBD | WIP Day 2 | 数据集准备：BDD100K 下载、筛选、格式转换 |
-| TBD | WIP Day 3 | 训练自定义检测器（车辆/行人/交通标志） |
-| TBD | WIP Day 4 | 评估优化：mAP 计算，TensorBoard 可视化 |
-| TBD | WIP Day 5 | DeepSORT 多目标跟踪集成 |
-| TBD | WIP Day 6 | IPM 鸟瞰图转换，车道线检测 |
-| TBD | WIP Day 7 | TensorRT / ONNX 导出与推理加速 |
-| TBD | WIP Day 8 | 项目收尾：README 完善，Demo 视频录制，简历包装 |
+| 2026-04-29 | WIP Day 2 | 数据集准备：BDD100K 下载、筛选、格式转换 |
+| 2026-05-01 | WIP Day 3 | YOLOv8s 全量训练完成，BDD100K mAP@50=0.676（RTX 5090 云训练 3h） |
+| TBD        | WIP Day 4 | 评估优化：mAP 计算，TensorBoard 可视化 |
+| TBD        | WIP Day 5 | DeepSORT 多目标跟踪集成 |
+| TBD        | WIP Day 6 | IPM 鸟瞰图转换，车道线检测 |
+| TBD        | WIP Day 7 | TensorRT / ONNX 导出与推理加速 |
+| TBD        | WIP Day 8 | 项目收尾：README 完善，Demo 视频录制，简历包装 |
 
 ---
 
