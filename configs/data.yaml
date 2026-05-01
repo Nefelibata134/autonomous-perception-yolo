@@ -5,8 +5,8 @@
 path: /home/nefelibata/autonomous_driving/autonomous-perception-yolo/data/bdd100k
 
 # 训练和验证图片路径（相对于 path）
-train: bdd100k/images/100k/train
-val: bdd100k/images/100k/val
+train: images/100k/train
+val: images/100k/val
 
 # 类别定义
 names:
