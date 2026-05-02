@@ -119,3 +119,10 @@ urllib3 @ file:///home/task_176781010304586/croot/urllib3_1767810267320/work
 Werkzeug==3.1.8
 wheel==0.46.3
 zstandard @ file:///home/task_175818846949212/conda-bld/zstandard_1758189073015/work
+ultralytics
+opencv-python
+numpy
+matplotlib
+tqdm
+tensorboard
+deep-sort-realtime

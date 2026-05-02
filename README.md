@@ -12,8 +12,8 @@
 | 模块 | 技术 | 状态 |
 |------|------|------|
 | 目标检测 | YOLOv8 (Ultralytics) | ✅ 预训练推理跑通 |
-| 数据集 | BDD100K | 🔄 准备中 |
-| 多目标跟踪 | DeepSORT / ByteTrack | ⏳ 待集成 |
+| 数据集 | BDD100K | ✅ 已准备 |
+| 多目标跟踪 | DeepSORT | ✅ 已集成 |
 | BEV 转换 | IPM (Inverse Perspective Mapping) | ⏳ 待集成 |
 | 推理加速 | TensorRT / ONNX | ⏳ 待优化 |
 | 硬件 | NVIDIA RTX 4070 Laptop GPU | ✅ |
@@ -67,7 +67,13 @@ autonomous-perception-yolo/
 ├── assets/
     ├──demo_detection.jpg
     ├──demo_yolo_labels.jpg
-    ├──test.jpg                      # 示例图片/视频（不上传大文件）
+    ├──test.jpg
+    ├──confusion_matrix.png
+    ├──metrics_pr_curve.png
+    ├──training_results.png
+    ├──demo_tracking.mp4
+    
+                          # 示例图片/视频（不上传大文件）
 ├── configs/
     ├──data.ymal             # 训练配置文件
 ├── data/
@@ -98,7 +104,9 @@ autonomous-perception-yolo/
 ├── train.py                 # 训练脚本
 ├── eval.py                  # 评估脚本（mAP计算）
 ├── requirements.txt
+├──inference_tracjing.py
 └── README.md
+
 ```
 
 ---
@@ -106,25 +114,24 @@ autonomous-perception-yolo/
 ## 🎬 演示
 
 ### 检测示例（预训练模型推理）
-![检测示例](https://github.com/Nefelibata134/autonomous-perception-yolo/blob/main/assets/demo_detection.jpg)
+![检测示例](assets/demo_detection.jpg)
 
-### 跟踪示例（WIP）
-待添加
+### 跟踪示例（DeepSORT 多目标跟踪）
+![跟踪示例](assets/demo_tracking.jpg)
 
 ---
 
 ## 📝 开发日志
 
-| 日期         | 里程碑 | 完成内容 |
-|------------|--------|----------|
+| 日期         | 里程碑       | 完成内容 |
+|------------|-----------|----------|
 | 2026-04-27 | WIP Day 1 | YOLOv8 环境搭建，单张图/视频推理跑通 |
 | 2026-04-29 | WIP Day 2 | 数据集准备：BDD100K 下载、筛选、格式转换 |
 | 2026-05-01 | WIP Day 3 | YOLOv8s 全量训练完成，BDD100K mAP@50=0.676（RTX 5090 云训练 3h） |
-| TBD        | WIP Day 4 | 评估优化：mAP 计算，TensorBoard 可视化 |
-| TBD        | WIP Day 5 | DeepSORT 多目标跟踪集成 |
-| TBD        | WIP Day 6 | IPM 鸟瞰图转换，车道线检测 |
-| TBD        | WIP Day 7 | TensorRT / ONNX 导出与推理加速 |
-| TBD        | WIP Day 8 | 项目收尾：README 完善，Demo 视频录制，简历包装 |
+| 2026-05-02 | WIP Day 4 | DeepSORT 多目标跟踪集成 |
+| TBD        | WIP Day 5 | IPM 鸟瞰图转换，车道线检测 |
+| TBD        | WIP Day 6 | TensorRT / ONNX 导出与推理加速 |
+| TBD        | WIP Day 7 | 项目收尾：README 完善，Demo 视频录制，简历包装 |
 
 ---
 
