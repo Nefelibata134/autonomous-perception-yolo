@@ -14,7 +14,7 @@
 | 目标检测 | YOLOv8 (Ultralytics) | ✅ 预训练推理跑通 |
 | 数据集 | BDD100K | ✅ 已准备 |
 | 多目标跟踪 | DeepSORT | ✅ 已集成 |
-| BEV 转换 | IPM (Inverse Perspective Mapping) | ⏳ 待集成 |
+| BEV 转换 | IPM (Inverse Perspective Mapping) | ✅ 已集成 |
 | 推理加速 | TensorRT / ONNX | ⏳ 待优化 |
 | 硬件 | NVIDIA RTX 4070 Laptop GPU | ✅ |
 
@@ -72,7 +72,6 @@ autonomous-perception-yolo/
     ├──metrics_pr_curve.png
     ├──training_results.png
     ├──demo_tracking.mp4
-    
                           # 示例图片/视频（不上传大文件）
 ├── configs/
     ├──data.ymal             # 训练配置文件
@@ -119,6 +118,9 @@ autonomous-perception-yolo/
 ### 跟踪示例（DeepSORT 多目标跟踪）
 ![跟踪示例](assets/demo_tracking.jpg)
 
+### BEV 鸟瞰图（检测+跟踪+IPM）
+![BEV示例](assets/demo_bev.jpg)
+
 ---
 
 ## 📝 开发日志
@@ -129,7 +131,7 @@ autonomous-perception-yolo/
 | 2026-04-29 | WIP Day 2 | 数据集准备：BDD100K 下载、筛选、格式转换 |
 | 2026-05-01 | WIP Day 3 | YOLOv8s 全量训练完成，BDD100K mAP@50=0.676（RTX 5090 云训练 3h） |
 | 2026-05-02 | WIP Day 4 | DeepSORT 多目标跟踪集成 |
-| TBD        | WIP Day 5 | IPM 鸟瞰图转换，车道线检测 |
+| 2026-05-03 | WIP Day 5 | BEV 鸟瞰图转换（IPM），前视图+BEV 并排可视化 |
 | TBD        | WIP Day 6 | TensorRT / ONNX 导出与推理加速 |
 | TBD        | WIP Day 7 | 项目收尾：README 完善，Demo 视频录制，简历包装 |
 
