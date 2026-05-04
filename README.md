@@ -30,6 +30,14 @@
 | BEV 车道线平行度误差 | < 5° | ⏳ | IPM 标定 |
 
 ---
+| 格式 | 精度 | FPS (RTX 5090) | 延迟(ms) | 加速比 |
+|------|------|----------------|----------|--------|
+| PyTorch | FP32 | 164.0 | 6.1 | 1.0x |
+| TensorRT | FP16 | 297.3 | 3.4 | 1.8x |
+
+> 注：TensorRT Engine 在 RTX 5090 (CUDA 12.8) 上导出并测试，
+> 因 Engine 与 Compute Capability 绑定，未在 RTX 4070 本地运行。
+> 实际车载部署时统一硬件环境，推理速度满足 >60 FPS 实时要求。
 
 ## 🚀 快速开始
 
@@ -93,17 +101,21 @@ autonomous-perception-yolo/
             ├──bdd100k_labels_images_train.json
             ├──bdd100k_labels_images_val.json          # 数据集（BDD100K，.gitignore）
 ├── models/
-│   ├── yolo_detector.py     # YOLOv8 封装类
-│   ├── deepsort_tracker.py  # DeepSORT 跟踪器
-│   └── bev_transform.py     # BEV 视角转换
+│   ├──yolo_detector.py     # YOLOv8 封装类
+│   ├──deepsort_tracker.py  # DeepSORT 跟踪器
+│   └──bev_transform.py     # BEV 视角转换
 ├── utils/
-│   ├── dataset_converter.py # BDD100K → YOLO 格式转换
-│   └── visualizer_yolo.py        # 可视化工具
-├── inference.py             # 推理入口
-├── train.py                 # 训练脚本
-├── eval.py                  # 评估脚本（mAP计算）
-├── requirements.txt
+│   ├──dataset_converter.py # BDD100K → YOLO 格式转换
+│   └──visualizer_yolo.py        # 可视化工具
+├──inference.py             # 推理入口
+├──train.py                 # 训练脚本
+├──eval.py                  # 评估脚本（mAP计算）
+├──requirements.txt
 ├──inference_tracjing.py
+├──export_deploy.py
+├──benchmark.py
+├──inference_trt.py
+├──benchmark_5090.txt
 └── README.md
 
 ```
@@ -132,7 +144,7 @@ autonomous-perception-yolo/
 | 2026-05-01 | WIP Day 3 | YOLOv8s 全量训练完成，BDD100K mAP@50=0.676（RTX 5090 云训练 3h） |
 | 2026-05-02 | WIP Day 4 | DeepSORT 多目标跟踪集成 |
 | 2026-05-03 | WIP Day 5 | BEV 鸟瞰图转换（IPM），前视图+BEV 并排可视化 |
-| TBD        | WIP Day 6 | TensorRT / ONNX 导出与推理加速 |
+| 2026-05-04 | WIP Day 6 | TensorRT 部署加速，5090 云测 FPS 297.3，1.8x 加速 |
 | TBD        | WIP Day 7 | 项目收尾：README 完善，Demo 视频录制，简历包装 |
 
 ---
@@ -149,3 +161,5 @@ autonomous-perception-yolo/
 ## 📧 联系
 
 如有问题或建议，欢迎提 [Issue](https://github.com/Nefelibata134/autonomous-perception-yolo/issues) 或联系作者。
+
+

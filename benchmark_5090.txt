@@ -1,0 +1,4 @@
+RTX 5090 部署加速对比
+PyTorch FP32: 164.0 FPS
+TensorRT FP16: 297.3 FPS
+加速比: 1.8x
