@@ -1,9 +1,16 @@
-# 🚗 自动驾驶 2D 感知与跟踪系统
+## 🚗 自动驾驶 2D 感知与跟踪系统
 
-基于 **YOLOv8** 的实时车辆/行人/交通标志检测，支持 **DeepSORT** 多目标跟踪与 **BEV** 鸟瞰图视角转换。
+基于 **YOLOv8** + **DeepSORT** + **BEV (IPM)** 的端到端自动驾驶感知 Pipeline，  
+支持 **TensorRT 部署加速**，在 RTX 5090 上达到 **297 FPS** 实时推理。
 
-> **状态**：活跃开发中（WIP）  
-> **目标**：暑假实习前完成端到端感知 Pipeline，支持视频流实时推理
+---
+
+## ✨ 核心亮点
+
+- 🎯 **BDD100K 自定义训练**：YOLOv8s 微调，4 类目标（car/person/traffic light/traffic sign），mAP@50=0.676
+- 🏃 **DeepSORT 多目标跟踪**：卡尔曼滤波 + 外观特征 ReID，支持遮挡恢复与 ID 一致性
+- 🗺️ **BEV 鸟瞰图转换**：IPM 逆透视变换，前视图 → 俯视感知，支持轨迹投影
+- 🚀 **TensorRT 部署加速**：FP16 量化，RTX 5090 上 297 FPS，较 PyTorch 提升 1.8x
 
 ---
 
@@ -11,23 +18,24 @@
 
 | 模块 | 技术 | 状态 |
 |------|------|------|
-| 目标检测 | YOLOv8 (Ultralytics) | ✅ 预训练推理跑通 |
-| 数据集 | BDD100K | ✅ 已准备 |
-| 多目标跟踪 | DeepSORT | ✅ 已集成 |
-| BEV 转换 | IPM (Inverse Perspective Mapping) | ✅ 已集成 |
-| 推理加速 | TensorRT / ONNX | ⏳ 待优化 |
-| 硬件 | NVIDIA RTX 4070 Laptop GPU | ✅ |
+| 目标检测 | YOLOv8 (Ultralytics) | ✅ mAP@50=0.676 |
+| 数据集 | BDD100K (7万张/4类) | ✅ 筛选 + 格式转换 |
+| 多目标跟踪 | DeepSORT | ✅ 卡尔曼 + ReID |
+| BEV 转换 | IPM (单应性矩阵) | ✅ 前视→鸟瞰 |
+| 训练加速 | AutoDL RTX 5090 | ✅ 3小时/50epochs |
+| 推理部署 | TensorRT FP16 | ✅ 297 FPS |
 
 ---
 
-## 📊 量化指标（目标 vs 当前）
+## 📊 量化指标
 
-| 指标 | 目标值 | 当前值 | 备注 |
-|------|--------|--------|------|
-| mAP@50 (BDD100K) | > 0.80 | **0.676** | YOLOv8s，50 epochs |
-| 推理速度 (RTX 4070) | > 60 FPS | WIP | batch=1, FP16 |
-| 跟踪 IDF1 Score | > 0.70 | ⏳ | DeepSORT |
-| BEV 车道线平行度误差 | < 5° | ⏳ | IPM 标定 |
+| 指标 | 目标值 | 实际值 | 测试环境 |
+|------|--------|--------|---------|
+| mAP@50 (BDD100K) | > 0.80 | **0.676** | RTX 4070 |
+| 推理速度 (PyTorch) | > 60 FPS | **164 FPS** | RTX 5090 FP32 |
+| 推理速度 (TensorRT) | > 60 FPS | **297 FPS** | RTX 5090 FP16 |
+| 跟踪 IDF1 Score | > 0.70 | 定性验证 | 视频序列 |
+| BEV 车道线平行度 | < 5° | 定性验证 | IPM 投影 |
 
 ---
 | 格式 | 精度 | FPS (RTX 5090) | 延迟(ms) | 加速比 |
@@ -41,36 +49,30 @@
 
 ## 🚀 快速开始
 
-### 环境要求
-- Python 3.9+
-- PyTorch 2.x + CUDA 11.8
-- NVIDIA GPU（显存 ≥ 8GB）
-
-### 安装
-
 ```bash
 git clone https://github.com/Nefelibata134/autonomous-perception-yolo.git
 cd autonomous-perception-yolo
 pip install -r requirements.txt
-```
 
-### 单张图推理
+# 单张图检测
+python inference.py --source assets/test.jpg --weights yolov8s.pt
 
-```bash
-python inference.py --source assets/test.jpg --weights yolov8s.pt --save
-```
+# 视频跟踪
+python inference_tracking.py --source assets/test_video.mp4
 
-### 视频推理
+# BEV 鸟瞰图
+python inference_bev.py --source assets/test_video.mp4
 
-```bash
-python inference.py --source assets/test_video.mp4 --weights yolov8s.pt --save
-```
+# 部署导出
+python export_deploy.py
 
 ---
 
-## 📁 项目结构
 
-```
+### 6. 项目结构（树状图）
+
+```markdown
+## 📁 项目结构
 autonomous-perception-yolo/
 ├── assets/
     ├──demo_detection.jpg
@@ -80,6 +82,7 @@ autonomous-perception-yolo/
     ├──metrics_pr_curve.png
     ├──training_results.png
     ├──demo_tracking.mp4
+    ├──demo_tracking.jpg
                           # 示例图片/视频（不上传大文件）
 ├── configs/
     ├──data.ymal             # 训练配置文件
