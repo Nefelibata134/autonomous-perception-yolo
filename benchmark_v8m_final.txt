@@ -1,0 +1,10 @@
+YOLOv8m 本地部署测试 (RTX 4070 Laptop, WSL CUDA 11.8)
+============================================================
+PyTorch FP32: 90.2 FPS ✅ 本地实测
+ONNX Runtime GPU: 无法运行（需要 CUDA 12.x）
+TensorRT FP16: 无法运行（Engine 硬件绑定 + 需要 CUDA 12.x）
+============================================================
+部署链路验证：
+- PyTorch → ONNX: ✅ 已导出（runs/detect/train/weights/best.onnx）
+- PyTorch → TensorRT Engine: ✅ 已在 RTX 5090 导出（best.engine, 51MB）
+- 实际加速推理需在目标部署设备（CUDA 12.x）上运行

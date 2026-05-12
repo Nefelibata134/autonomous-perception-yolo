@@ -20,4 +20,6 @@ __pycache__/
 
 # 系统
 .idea/
-.cache/
+.cache/*.pt
+*.engine
+*.onnx

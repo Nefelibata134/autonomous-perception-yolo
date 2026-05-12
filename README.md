@@ -1,13 +1,13 @@
 ## 🚗 自动驾驶 2D 感知与跟踪系统
 
-基于 **YOLOv8** + **DeepSORT** + **BEV (IPM)** 的端到端自动驾驶感知 Pipeline，  
-支持 **TensorRT 部署加速**，在 RTX 5090 上达到 **297 FPS** 实时推理。
+基于 **YOLOv8m** + **DeepSORT** + **BEV (IPM)** 的端到端自动驾驶感知 Pipeline，  
+支持 **TensorRT 部署加速**，本地 RTX 4070 实测 **90.2 FPS**，YOLOv8s 基准 RTX 5090 达 **297 FPS**。
 
 ---
 
 ## ✨ 核心亮点
 
-- 🎯 **BDD100K 自定义训练**：YOLOv8s 微调，4 类目标（car/person/traffic light/traffic sign），mAP@50=0.676
+- 🎯 **BDD100K 自定义训练**：YOLOv8m 迭代优化，4 类目标（car/person/traffic light/traffic sign），**mAP@50=0.718**，较基线 YOLOv8s（0.676）提升 6.2%
 - 🏃 **DeepSORT 多目标跟踪**：卡尔曼滤波 + 外观特征 ReID，支持遮挡恢复与 ID 一致性
 - 🗺️ **BEV 鸟瞰图转换**：IPM 逆透视变换，前视图 → 俯视感知，支持轨迹投影
 - 🚀 **TensorRT 部署加速**：FP16 量化，RTX 5090 上 297 FPS，较 PyTorch 提升 1.8x
@@ -18,7 +18,7 @@
 
 | 模块 | 技术 | 状态 |
 |------|------|------|
-| 目标检测 | YOLOv8 (Ultralytics) | ✅ mAP@50=0.676 |
+| 目标检测 | YOLOv8m (Ultralytics) | ✅ mAP@50=0.718 |
 | 数据集 | BDD100K (7万张/4类) | ✅ 筛选 + 格式转换 |
 | 多目标跟踪 | DeepSORT | ✅ 卡尔曼 + ReID |
 | BEV 转换 | IPM (单应性矩阵) | ✅ 前视→鸟瞰 |
@@ -29,23 +29,17 @@
 
 ## 📊 量化指标
 
-| 指标 | 目标值 | 实际值 | 测试环境 |
-|------|--------|--------|---------|
-| mAP@50 (BDD100K) | > 0.80 | **0.676** | RTX 4070 |
-| 推理速度 (PyTorch) | > 60 FPS | **164 FPS** | RTX 5090 FP32 |
-| 推理速度 (TensorRT) | > 60 FPS | **297 FPS** | RTX 5090 FP16 |
-| 跟踪 IDF1 Score | > 0.70 | 定性验证 | 视频序列 |
-| BEV 车道线平行度 | < 5° | 定性验证 | IPM 投影 |
+| 指标 | 目标值 | YOLOv8s 基线 | YOLOv8m 优化 | 备注 |
+|------|--------|-------------|-------------|------|
+| mAP@50 (BDD100K) | > 0.80 | 0.676 | **0.718** | RTX 5090 云训练 |
+| 推理速度 (PyTorch, 4070) | > 60 FPS | - | **90.2 FPS** | 本地实测 |
+| 推理速度 (TensorRT, 5090) | > 60 FPS | **297 FPS** | ~260 FPS（待测） | FP16，Engine 导出验证 |
+| 跟踪 IDF1 Score | > 0.70 | - | 定性验证 | 视频序列 |
+| BEV 车道线平行度 | < 5° | - | 定性验证 | IPM 投影 |
 
----
-| 格式 | 精度 | FPS (RTX 5090) | 延迟(ms) | 加速比 |
-|------|------|----------------|----------|--------|
-| PyTorch | FP32 | 164.0 | 6.1 | 1.0x |
-| TensorRT | FP16 | 297.3 | 3.4 | 1.8x |
-
-> 注：TensorRT Engine 在 RTX 5090 (CUDA 12.8) 上导出并测试，
-> 因 Engine 与 Compute Capability 绑定，未在 RTX 4070 本地运行。
-> 实际车载部署时统一硬件环境，推理速度满足 >60 FPS 实时要求。
+> **部署说明**：本地 WSL 为 CUDA 11.8，TensorRT 10.x / ONNX Runtime GPU 需 CUDA 12.x。  
+> 已完成 PyTorch → ONNX → TensorRT Engine 全链路导出验证（5090 上导出成功）。  
+> 实际车载部署时在目标设备（如 Orin, CUDA 12.x）上重新导出 Engine 即可。
 
 ## 🚀 快速开始
 
@@ -55,6 +49,9 @@ cd autonomous-perception-yolo
 pip install -r requirements.txt
 
 # 单张图检测
+python inference.py --source assets/test.jpg --weights runs/detect/train_v8m_optimized/weights/best.pt
+
+# 或先用 COCO 预训练权重快速体验
 python inference.py --source assets/test.jpg --weights yolov8s.pt
 
 # 视频跟踪
@@ -120,6 +117,9 @@ autonomous-perception-yolo/
 ├──inference_trt.py
 ├──benchmark_5090.txt
 └── README.md
+├── train_v2_optimized.py   # YOLOv8m 优化训练脚本（100 epochs + 强增强）
+├── MODEL_COMPARISON.md     # 模型选型分析（n/s/m/l/x 对比）
+├── benchmark_v8m_final.txt # YOLOv8m 本地 benchmark 结果
 
 ```
 
@@ -148,7 +148,8 @@ autonomous-perception-yolo/
 | 2026-05-02 | WIP Day 4 | DeepSORT 多目标跟踪集成 |
 | 2026-05-03 | WIP Day 5 | BEV 鸟瞰图转换（IPM），前视图+BEV 并排可视化 |
 | 2026-05-04 | WIP Day 6 | TensorRT 部署加速，5090 云测 FPS 297.3，1.8x 加速 |
-| TBD        | WIP Day 7 | 项目收尾：README 完善，Demo 视频录制，简历包装 |
+| 2026-05-05 | WIP Day 7 | 项目收尾：README 完善，Demo 视频录制，简历包装 |
+| 2026-05-12 | 模型优化 | YOLOv8s→YOLOv8m，mAP 0.676→0.718（+6.2%），本地 PyTorch 90.2 FPS |
 
 ---
 
