@@ -7,11 +7,10 @@ from ultralytics import YOLO
 
 def main():
     # 1. 加载预训练模型（自动下载 yolov8s.pt）
-    # 选择 yolov8s 的原因：速度精度平衡，4070 8GB 显存能跑
     model = YOLO('yolov8s.pt')
 
     # 2. 开始训练
-    # 关键参数说明（面试必问）：
+    # 关键参数说明：
     # - data: 数据集配置文件路径
     # - epochs: 训练轮数（BDD100K 子集 50 轮足够，全量建议 100）
     # - batch: 批次大小（4070 8GB 建议 8，如果爆显存改 4）

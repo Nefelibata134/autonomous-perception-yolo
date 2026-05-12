@@ -114,7 +114,7 @@ autonomous-perception-yolo/
 ├──train.py                 # 训练脚本
 ├──eval.py                  # 评估脚本（mAP计算）
 ├──requirements.txt
-├──inference_tracjing.py
+├──inference_tracking.py
 ├──export_deploy.py
 ├──benchmark.py
 ├──inference_trt.py

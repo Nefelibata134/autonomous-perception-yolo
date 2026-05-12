@@ -1,7 +1,7 @@
 """
 inference_tracking.py
 视频流实时检测 + DeepSORT 跟踪
-输出：带跟踪 ID 的 Demo 视频（简历展示核心素材）
+输出：带跟踪 ID 的 Demo 视频
 """
 import cv2
 import argparse

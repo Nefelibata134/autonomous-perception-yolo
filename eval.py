@@ -25,7 +25,7 @@ def evaluate():
         exist_ok=True,
     )
 
-    # 提取关键指标（面试时直接报这些数字）
+    # 提取关键指标
     map50 = metrics.box.map50  # mAP@50
     map75 = metrics.box.map75  # mAP@75
     map50_95 = metrics.box.map  # mAP@50:95
@@ -38,7 +38,7 @@ def evaluate():
     print(f"mAP@50:95:  {map50_95:.4f}")
     print("=" * 50)
 
-    # 保存指标到文件（方便 README 复制）
+    # 保存指标到文件
     import os
     os.makedirs('runs/detect/val', exist_ok=True)
     with open('runs/detect/val/metrics_summary.txt', 'w') as f:
@@ -46,7 +46,7 @@ def evaluate():
         f.write(f"mAP@75: {map75:.4f}\n")
         f.write(f"mAP@50:95: {map50_95:.4f}\n")
 
-    # 绘制 PR 曲线（简历展示用）
+    # 绘制 PR 曲线
     try:
         fig, ax = plt.subplots(1, 1, figsize=(10, 8))
 
@@ -62,7 +62,6 @@ def evaluate():
         if pr_path.exists():
             print(f"\n✅ PR 曲线已生成: {pr_path}")
 
-        # 复制到 assets 用于 README 展示
         import shutil
         if pr_path.exists():
             shutil.copy(pr_path, 'assets/metrics_pr_curve.png')

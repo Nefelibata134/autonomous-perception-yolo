@@ -13,7 +13,7 @@ def detect_image(model_path, source, conf=0.5, save=True):
     单张图推理
 
     Args:
-        model_path: YOLO 模型路径（yolov8n.pt 等）
+        model_path: YOLO 模型路径
         source: 图片路径
         conf: 置信度阈值（低于此值的框不显示）
         save: 是否保存结果
