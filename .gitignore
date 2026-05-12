@@ -23,3 +23,5 @@ __pycache__/
 .cache/*.pt
 *.engine
 *.onnx
+!assets/*.mp4
+test_detected.jpg

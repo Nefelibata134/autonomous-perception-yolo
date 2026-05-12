@@ -1,0 +1,59 @@
+============================================================
+🚗 YOLOv8m 本地部署加速对比 (RTX 4070)
+============================================================
+PyTorch FP32: 90.2 FPS
+Loading runs/detect/train/weights/best.onnx for ONNX Runtime inference...
+Using ONNX Runtime 1.25.1 with CUDAExecutionProvider
+[1;31m2026-05-12 20:37:40.456114362 [E:onnxruntime:Default, provider_bridge_ort.cc:2369 TryGetProviderInfo_CUDA] /onnxruntime_src/onnxruntime/core/session/provider_bridge_ort.cc:1962 onnxruntime::Provider& onnxruntime::ProviderLibrary::Get() [ONNXRuntimeError] : 1 : FAIL : Failed to load library /home/nefelibata/miniconda3/lib/python3.13/site-packages/onnxruntime/capi/libonnxruntime_providers_cuda.so with error: libcublasLt.so.12: cannot open shared object file: No such file or directory
+[m
+[0;93m2026-05-12 20:37:40.456141126 [W:onnxruntime:Default, onnxruntime_pybind_state.cc:1099 CreateExecutionProviderFactoryInstance] Failed to create CUDAExecutionProvider. Require cuDNN 9.* and CUDA 12.*. Please install all dependencies as mentioned in the GPU requirements page (https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements), make sure they're in the PATH, and that your GPU is supported.[m
+Traceback (most recent call last):
+  File "<string>", line 30, in <module>
+    if ret: model_onnx(f, verbose=False)
+            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/ultralytics/engine/model.py", line 177, in __call__
+    return self.predict(source, stream, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/ultralytics/engine/model.py", line 537, in predict
+    return self.predictor.predict_cli(source=source) if is_cli else self.predictor(source=source, stream=stream)
+                                                                    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/ultralytics/engine/predictor.py", line 226, in __call__
+    return list(self.stream_inference(source, model, *args, **kwargs))  # merge list of Results into one
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/torch/utils/_contextlib.py", line 36, in generator_context
+    response = gen.send(None)
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/ultralytics/engine/predictor.py", line 308, in stream_inference
+    self.model.warmup(
+    ~~~~~~~~~~~~~~~~~^
+        imgsz=(
+        ^^^^^^^
+    ...<3 lines>...
+        )
+        ^
+    )
+    ^
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/ultralytics/nn/autobackend.py", line 307, in warmup
+    self.forward(im)  # warmup model
+    ~~~~~~~~~~~~^^^^
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/ultralytics/nn/autobackend.py", line 273, in forward
+    y = self.backend.forward(im, **forward_kwargs)
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/ultralytics/nn/backends/onnx.py", line 126, in forward
+    self.io.bind_input(
+    ~~~~~~~~~~~~~~~~~~^
+        name="images",
+        ^^^^^^^^^^^^^^
+    ...<4 lines>...
+        buffer_ptr=im.data_ptr(),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py", line 913, in bind_input
+    self._iobinding.bind_input(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        name,
+        ^^^^^
+    ...<7 lines>...
+        buffer_ptr,
+        ^^^^^^^^^^^
+    )
+    ^
+RuntimeError: Error when binding input: There's no data transfer registered for copying tensors from Device:[DeviceType:1 MemoryType:0 VendorId:4318 DeviceId:0 Alignment:0] to Device:[DeviceType:0 MemoryType:0 VendorId:0 DeviceId:0 Alignment:0]

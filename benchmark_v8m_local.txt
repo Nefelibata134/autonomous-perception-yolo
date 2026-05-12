@@ -1,0 +1,43 @@
+============================================================
+🚗 YOLOv8m 本地部署加速对比 (RTX 4070)
+============================================================
+PyTorch FP32: 90.8 FPS
+Loading runs/detect/train_v8m_optimized/weights/best.engine for TensorRT inference...
+[05/12/2026-20:33:37] [TRT] [I] Loaded engine size: 51 MiB
+[05/12/2026-20:33:37] [TRT] [E] IRuntime::deserializeCudaEngine: Error Code 6: API Usage Error (The engine plan file is generated on an incompatible device, expecting compute 8.9 got compute 12.0, please rebuild. In checkEngineDeviceCompatible at /_src/runtime/api/engine.cpp:909)
+ERROR ❌ TensorRT model exported with a different version than expected
+
+Traceback (most recent call last):
+  File "<string>", line 17, in <module>
+    if ret: model(f, verbose=False)
+            ~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/ultralytics/engine/model.py", line 177, in __call__
+    return self.predict(source, stream, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/ultralytics/engine/model.py", line 530, in predict
+    self.predictor.setup_model(model=self.model, verbose=is_cli)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/ultralytics/engine/predictor.py", line 400, in setup_model
+    self.model = AutoBackend(
+                 ~~~~~~~~~~~^
+        model=model or self.args.model,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        verbose=verbose,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/ultralytics/nn/autobackend.py", line 214, in __init__
+    self.backend = self._BACKEND_MAP[format](model, **backend_kwargs)
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/ultralytics/nn/backends/base.py", line 53, in __init__
+    self.load_model(weight)
+    ~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/ultralytics/nn/backends/tensorrt.py", line 69, in load_model
+    raise e
+  File "/home/nefelibata/miniconda3/lib/python3.13/site-packages/ultralytics/nn/backends/tensorrt.py", line 66, in load_model
+    self.context = engine.create_execution_context()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'create_execution_context'
