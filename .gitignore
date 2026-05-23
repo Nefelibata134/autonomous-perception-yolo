@@ -12,16 +12,11 @@ runs/
 __pycache__/
 *.pyc
 
-# 视频和大图（示例图除外）
+# 视频（不上传，用 GIF 替代）
 *.mp4
 *.avi
-!assets/*.jpg
-!assets/*.png
 
 # 系统
 .idea/
-.cache/*.pt
-*.engine
-*.onnx
-!assets/*.mp4
+.cache/
 test_detected.jpg

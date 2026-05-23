@@ -1,45 +1,66 @@
+
 ## 🚗 自动驾驶 2D 感知与跟踪系统
 
-基于 **YOLOv8m** + **DeepSORT** + **BEV (IPM)** 的端到端自动驾驶感知 Pipeline，  
-支持 **TensorRT 部署加速**，本地 RTX 4070 实测 **90.2 FPS**，YOLOv8s 基准 RTX 5090 达 **297 FPS**。
+端到端感知 Pipeline：**YOLOv8m** → **DeepSORT** → **BEV (IPM)** → **TensorRT 部署**
+
+![GitHub last commit](https://img.shields.io/badge/mAP%400.5-0.718-green)
+![GitHub last commit](https://img.shields.io/badge/TensorRT_FPS-280.8-blue)
+![GitHub last commit](https://img.shields.io/badge/Speedup-4.0×-orange)
+
+---
+
+## 🎬 演示
+
+### 多目标跟踪（YOLOv8m + DeepSORT）
+<img src="assets/demo_tracking.gif" width="100%">
+
+### BEV 鸟瞰图（检测 → IPM 俯视投影）
+<img src="assets/demo_bev.gif" width="100%">
+
+### 单帧检测
+![检测](assets/demo_detection.jpg)
 
 ---
 
 ## ✨ 核心亮点
 
-- 🎯 **BDD100K 自定义训练**：YOLOv8m 迭代优化，4 类目标（car/person/traffic light/traffic sign），**mAP@50=0.718**，较基线 YOLOv8s（0.676）提升 6.2%
-- 🏃 **DeepSORT 多目标跟踪**：卡尔曼滤波 + 外观特征 ReID，支持遮挡恢复与 ID 一致性
-- 🗺️ **BEV 鸟瞰图转换**：IPM 逆透视变换，前视图 → 俯视感知，支持轨迹投影
-- 🚀 **TensorRT 部署加速**：FP16 量化，RTX 5090 上 297 FPS，较 PyTorch 提升 1.8x
-
----
-
-## 🛠️ 技术栈
-
-| 模块 | 技术 | 状态             |
-|------|------|----------------|
-| 目标检测 | YOLOv8m (Ultralytics) | ✅ mAP@50=0.718 |
-| 数据集 | BDD100K (7万张/4类) | ✅ 筛选 + 格式转换    |
-| 多目标跟踪 | DeepSORT | ✅ 卡尔曼 + ReID   |
-| BEV 转换 | IPM (单应性矩阵) | ✅ 前视→鸟瞰        |
-| 训练加速 | AutoDL RTX 5090 | ✅ 7小时/60epochs |
-| 推理部署 | TensorRT FP16 | ✅ 297 FPS      |
+| 模块 | 做了什么 | 成果 |
+|------|----------|------|
+| 🎯 **目标检测** | YOLOv8m 在 BDD100K 上自定义训练 | mAP@50 = **0.718**（vs 基线 +6.2%） |
+| 🏃 **多目标跟踪** | 集成 DeepSORT（卡尔曼滤波 + ReID） | 遮挡恢复、ID 一致性、视频级验证 |
+| 🗺️ **BEV 感知** | IPM 逆透视变换（前视图 → 鸟瞰图） | 轨迹投影 + 相对距离估计 |
+| 🚀 **TensorRT 部署** | PyTorch → ONNX → TensorRT FP16 | **280.8 FPS / 4.0× 加速 / 23.8 MB** |
 
 ---
 
 ## 📊 量化指标
 
-| 指标 | 目标值 | YOLOv8s 基线 | YOLOv8m 优化 | 备注 |
-|------|--------|-------------|-------------|------|
-| mAP@50 (BDD100K) | > 0.80 | 0.676 | **0.718** | RTX 5090 云训练 |
-| 推理速度 (PyTorch, 4070) | > 60 FPS | - | **90.2 FPS** | 本地实测 |
-| 推理速度 (TensorRT, 5090) | > 60 FPS | **297 FPS** | ~260 FPS（待测） | FP16，Engine 导出验证 |
-| 跟踪 IDF1 Score | > 0.70 | - | 定性验证 | 视频序列 |
-| BEV 车道线平行度 | < 5° | - | 定性验证 | IPM 投影 |
+| 指标 | 数值 | 说明 |
+|------|:---:|------|
+| **mAP@50** | **0.718** | BDD100K 4 类，vs YOLOv8s 基线 0.676 (+6.2%) |
+| **PyTorch FPS** | **70.3** | RTX 4070，完整流程（前处理+推理+NMS） |
+| **TensorRT FPS** | **280.8** | FP16，RTX 4070 实测 500 帧平均 |
+| **加速比** | **4.0×** | 同 GPU、同模型、同 pipeline 的公平对比 |
+| **模型大小** | **23.8 MB** | TensorRT FP16 Engine（.pt 原 197.8 MB） |
+| **显存占用** | **~1 GB** | YOLOv8m + DeepSORT，8 GB 显卡绰绰有余 |
+| **参数量** | **25.9M** | YOLOv8m，精度-速度最优平衡点 |
 
-> **部署说明**：本地 WSL 为 CUDA 11.8，TensorRT 10.x / ONNX Runtime GPU 需 CUDA 12.x。  
-> 已完成 PyTorch → ONNX → TensorRT Engine 全链路导出验证（5090 上导出成功）。  
-> 实际车载部署时在目标设备（如 Orin, CUDA 12.x）上重新导出 Engine 即可。
+> ⚠️ **数据可复现**：所有 FPS / 加速比 / 显存均在本地 RTX 4070 实测。RTX 5090 Engine（51 MB FP16）已导出，部署时按目标 GPU 重新构建即可。
+
+---
+
+## 🛠️ 技术栈
+
+| 模块 | 技术 | 说明 |
+|------|------|------|
+| 检测 | YOLOv8m (Ultralytics) | 25.9M 参数，全系选型（n/s/m/l/x）后选定 |
+| 数据集 | BDD100K | 7 万张街景图，筛选 4 类目标 |
+| 跟踪 | DeepSORT | 卡尔曼滤波 + MobileNetV2 ReID 外观匹配 |
+| BEV | IPM 逆透视变换 | 单应性矩阵投影，前视 → 俯视 |
+| 训练 | RTX 5090 云 GPU | AdamW + 余弦退火，60 epochs，7h |
+| 部署 | TensorRT 10.x FP16 | CUDA 13.2，完整导出链 |
+
+---
 
 ## 🚀 快速开始
 
@@ -49,10 +70,7 @@ cd autonomous-perception-yolo
 pip install -r requirements.txt
 
 # 单张图检测
-python inference.py --source assets/test.jpg --weights runs/detect/train_v8m_optimized/weights/best.pt
-
-# 或先用 COCO 预训练权重快速体验
-python inference.py --source assets/test.jpg --weights yolov8s.pt
+python inference.py --source assets/test.jpg
 
 # 视频跟踪
 python inference_tracking.py --source assets/test_video.mp4
@@ -60,110 +78,82 @@ python inference_tracking.py --source assets/test_video.mp4
 # BEV 鸟瞰图
 python inference_bev.py --source assets/test_video.mp4
 
-# 部署导出
-python export_deploy.py
+# TensorRT 推理（需先导出 Engine）
+python inference_trt.py --source assets/test.jpg
 
----
-
-
-### 6. 项目结构（树状图）
-
-```markdown
-## 📁 项目结构
-autonomous-perception-yolo/
-├── assets/
-    ├──demo_detection.jpg
-    ├──demo_yolo_labels.jpg
-    ├──test.jpg
-    ├──confusion_matrix.png
-    ├──metrics_pr_curve.png
-    ├──training_results.png
-    ├──demo_tracking.mp4
-    ├──demo_tracking.jpg
-                          # 示例图片/视频（不上传大文件）
-├── configs/
-    ├──data.ymal             # 训练配置文件
-├── data/
-    ├──bdd100k/
-        ├──images/
-            ├──10k/
-                ├──test/
-                ├──train/
-                ├──val/
-            ├──100k/
-                ├──test/
-                ├──train/
-                ├──val/
-        ├──labels/
-            ├──100k/
-                ├──train/
-                ├──val/
-            ├──bdd100k_labels_images_train.json
-            ├──bdd100k_labels_images_val.json          # 数据集（BDD100K，.gitignore）
-├── models/
-│   ├──yolo_detector.py     # YOLOv8 封装类
-│   ├──deepsort_tracker.py  # DeepSORT 跟踪器
-│   └──bev_transform.py     # BEV 视角转换
-├── utils/
-│   ├──dataset_converter.py # BDD100K → YOLO 格式转换
-│   └──visualizer_yolo.py        # 可视化工具
-├──inference.py             # 推理入口
-├──train.py                 # 训练脚本
-├──eval.py                  # 评估脚本（mAP计算）
-├──requirements.txt
-├──inference_tracking.py
-├──export_deploy.py
-├──benchmark.py
-├──inference_trt.py
-├──benchmark_5090.txt
-└── README.md
-├── train_v2_optimized.py   # YOLOv8m 优化训练脚本（100 epochs + 强增强）
-├── MODEL_COMPARISON.md     # 模型选型分析（n/s/m/l/x 对比）
-├── benchmark_v8m_final.txt # YOLOv8m 本地 benchmark 结果
-
+# Benchmark
+python bench_full_pipeline.py  # 完整 Pipeline 对比
+python bench_tensorrt.py       # 纯模型推理对比
+python bench_reid.py           # ReID 对比
 ```
 
 ---
 
-## 🎬 演示
+## 📁 项目结构
 
-### 检测示例（预训练模型推理）
-![检测示例](assets/demo_detection.jpg)
-
-### 跟踪示例（DeepSORT 多目标跟踪）
-![跟踪示例](assets/demo_tracking.jpg)
-
-### BEV 鸟瞰图（检测+跟踪+IPM）
-![BEV示例](assets/demo_bev.jpg)
+```
+autonomous-perception-yolo/
+├── assets/                   # 示例图片 / GIF / 视频
+│   ├── demo_tracking.gif     # 跟踪演示 GIF
+│   ├── demo_bev.gif          # BEV 演示 GIF
+│   └── demo_detection.jpg    # 检测截图
+├── configs/
+│   └── data.yaml             # BDD100K 训练配置
+├── data/                     # 数据集（.gitignore）
+├── models/
+│   ├── yolo_detector.py      # YOLOv8 检测封装
+│   ├── deepsort_tracker.py   # DeepSORT 跟踪器
+│   └── bev_transform.py      # IPM 鸟瞰图变换
+├── utils/
+│   ├── dataset_converter.py  # BDD100K JSON → YOLO 格式
+│   └── visualizer.py         # 可视化工具
+├── runs/detect/              # 训练权重 / Engine / 日志
+├── inference.py              # 单图 / 视频推理
+├── inference_tracking.py     # 检测 + 跟踪
+├── inference_bev.py          # BEV 鸟瞰图
+├── inference_trt.py          # TensorRT 推理
+├── train.py                  # 训练脚本
+├── train_v2_optimized.py     # 优化训练（100 epoch）
+├── export_deploy.py          # ONNX / TensorRT 导出
+├── benchmark.py              # 旧 benchmark（YOLOv8s 时代）
+├── bench_full_pipeline.py    # 完整 Pipeline benchmark
+├── bench_tensorrt.py         # 纯模型 PyTorch vs TRT
+├── bench_pytorch_pure.py     # 纯 PyTorch benchmark
+├── bench_reid.py             # ReID TensorRT benchmark
+├── bench_vram2.py            # 显存测量
+├── MODEL_COMPARISON.md       # YOLOv8 全系选型分析
+├── requirements.txt
+└── README.md
+```
 
 ---
 
 ## 📝 开发日志
 
-| 日期         | 里程碑       | 完成内容 |
-|------------|-----------|----------|
-| 2026-04-27 | WIP Day 1 | YOLOv8 环境搭建，单张图/视频推理跑通 |
-| 2026-04-29 | WIP Day 2 | 数据集准备：BDD100K 下载、筛选、格式转换 |
-| 2026-05-01 | WIP Day 3 | YOLOv8s 全量训练完成，BDD100K mAP@50=0.676（RTX 5090 云训练 3h） |
-| 2026-05-02 | WIP Day 4 | DeepSORT 多目标跟踪集成 |
-| 2026-05-03 | WIP Day 5 | BEV 鸟瞰图转换（IPM），前视图+BEV 并排可视化 |
-| 2026-05-04 | WIP Day 6 | TensorRT 部署加速，5090 云测 FPS 297.3，1.8x 加速 |
-| 2026-05-05 | WIP Day 7 | 项目收尾：README 完善，Demo 视频录制，简历包装 |
-| 2026-05-12 | 模型优化 | YOLOv8s→YOLOv8m，mAP 0.676→0.718（+6.2%），本地 PyTorch 90.2 FPS |
+| 日期 | 里程碑 | 内容 |
+|------|--------|------|
+| 04-27 | Day 1 | 环境搭建，单张图/视频推理跑通 |
+| 04-29 | Day 2 | BDD100K 下载、4 类筛选、JSON → YOLO 格式转换 |
+| 05-01 | Day 3 | YOLOv8s 全量训练，mAP@50=0.676（5090 云，3h） |
+| 05-02 | Day 4 | DeepSORT 多目标跟踪集成 |
+| 05-03 | Day 5 | BEV 鸟瞰图（IPM），前视图+BEV 并排可视化 |
+| 05-04 | Day 6 | TensorRT 部署导出，生成 Engine |
+| 05-05 | Day 7 | 项目收尾：README / Demo 视频 / 简历 |
+| 05-12 | 优化 | YOLOv8s→YOLOv8m，mAP 0.676→0.718 (+6.2%)，参数 11.2M→25.9M |
+| 05-23 | 修正 | **重测全部 benchmark**（本地 4070）：TensorRT 280.8 FPS / 4.0× 加速。ReID 也完成 TensorRT 导出 |
+| | | **新增**：GIF 演示、显存测量（~1 GB）、完整 benchmark 脚本 |
 
 ---
 
 ## 📚 参考资料
 
-- [Ultralytics YOLOv8 Docs](https://docs.ultralytics.com/)
+- [Ultralytics YOLOv8](https://docs.ultralytics.com/)
 - [BDD100K Dataset](https://bdd-data.berkeley.edu/)
-- [DeepSORT Paper](https://arxiv.org/abs/1703.07402)
-- [IPM (Inverse Perspective Mapping)](https://en.wikipedia.org/wiki/Inverse_perspective_mapping)
+- [DeepSORT: Simple Online and Realtime Tracking with a Deep Association Metric](https://arxiv.org/abs/1703.07402)
+- [Inverse Perspective Mapping](https://en.wikipedia.org/wiki/Inverse_perspective_mapping)
 
 ---
 
 ## 📧 联系
 
-如有问题或建议，欢迎提 [Issue](https://github.com/Nefelibata134/autonomous-perception-yolo/issues) 或联系作者。
-
-
+有问题或建议？欢迎提 [Issue](https://github.com/Nefelibata134/autonomous-perception-yolo/issues)。
