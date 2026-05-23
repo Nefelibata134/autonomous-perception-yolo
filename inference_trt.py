@@ -13,7 +13,9 @@ def inference_trt(source, output='output_trt.mp4'):
     """
     TensorRT 实时推理（FP16 加速）
     """
-    engine_path = 'runs/detect/train/weights/best.engine'
+    # 本地 RTX 4070 导出的 TensorRT engine（FP16，23.8 MB）
+    # 如需其他 GPU 的 engine，先运行: python export_deploy.py
+    engine_path = 'runs/detect/train/weights/best_local.engine'
 
     if not Path(engine_path).exists():
         print(f"❌ Engine 不存在: {engine_path}")

@@ -3,19 +3,19 @@
 
 端到端感知 Pipeline：**YOLOv8m** → **DeepSORT** → **BEV (IPM)** → **TensorRT 部署**
 
-![GitHub last commit](https://img.shields.io/badge/mAP%400.5-0.718-green)
-![GitHub last commit](https://img.shields.io/badge/TensorRT_FPS-280.8-blue)
-![GitHub last commit](https://img.shields.io/badge/Speedup-4.0×-orange)
+![mAP@0.5: 0.718](https://img.shields.io/badge/mAP%400.5-0.718-green)
+![TensorRT FPS: 280.8](https://img.shields.io/badge/TensorRT_FPS-280.8-blue)
+![Speedup: 4.0×](https://img.shields.io/badge/Speedup-4.0×-orange)
 
 ---
 
 ## 🎬 演示
 
 ### 多目标跟踪（YOLOv8m + DeepSORT）
-<img src="assets/demo_tracking.gif" width="100%">
+![多目标跟踪演示](assets/demo_tracking.gif)
 
 ### BEV 鸟瞰图（检测 → IPM 俯视投影）
-<img src="assets/demo_bev.gif" width="100%">
+![BEV 鸟瞰图演示](assets/demo_bev.gif)
 
 ### 单帧检测
 ![检测](assets/demo_detection.jpg)
@@ -106,7 +106,7 @@ autonomous-perception-yolo/
 │   └── bev_transform.py      # IPM 鸟瞰图变换
 ├── utils/
 │   ├── dataset_converter.py  # BDD100K JSON → YOLO 格式
-│   └── visualizer.py         # 可视化工具
+│   └── visualize_yolo.py         # 可视化工具
 ├── runs/detect/              # 训练权重 / Engine / 日志
 ├── inference.py              # 单图 / 视频推理
 ├── inference_tracking.py     # 检测 + 跟踪
@@ -115,7 +115,6 @@ autonomous-perception-yolo/
 ├── train.py                  # 训练脚本
 ├── train_v2_optimized.py     # 优化训练（100 epoch）
 ├── export_deploy.py          # ONNX / TensorRT 导出
-├── benchmark.py              # 旧 benchmark（YOLOv8s 时代）
 ├── bench_full_pipeline.py    # 完整 Pipeline benchmark
 ├── bench_tensorrt.py         # 纯模型 PyTorch vs TRT
 ├── bench_pytorch_pure.py     # 纯 PyTorch benchmark
