@@ -52,7 +52,7 @@ def export_models():
         print(f"⚠️ TensorRT 导出失败（需安装 tensorrt）: {e}")
         print("💡 提示：先确保 pip install tensorrt 成功，或从 NVIDIA 官网下载")
 
-    print("\n📊 导出完成，接下来运行 benchmark.py 对比速度")
+    print("\n📊 导出完成，接下来运行 bench_full_pipeline.py 对比速度")
 
 
 if __name__ == '__main__':
